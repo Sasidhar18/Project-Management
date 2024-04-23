@@ -11,12 +11,14 @@ const SideBar = ({ projects, getProjectDetails, onAddProject }) => {
       </p>
       {projects.projects.map((item) => (
         <ul key={item.id}>
-          <button
-            onClick={() => getProjectDetails(item.id)}
-            className="project-btn"
-          >
-            {item.title}
-          </button>
+          <li>
+            <button
+              onClick={() => getProjectDetails(item.id)}
+              className="project-btn"
+            >
+              {item.title}
+            </button>
+          </li>
         </ul>
       ))}
     </aside>
