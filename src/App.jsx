@@ -1,9 +1,18 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import SideBar from "./Components/SideBar";
 import "./App.css";
 import ProjectInput from "./Components/projectInput";
 import FallbackProject from "./Components/FallbackProject";
 import ProjectView from "./Components/ProjectView";
+import db from "./Components/firebase.js";
+import {
+  collection,
+  getDocs,
+  doc,
+  setDoc,
+  deleteDoc,
+  addDoc,
+} from "firebase/firestore/lite";
 
 const App = () => {
   const [ProjectDetails, setProjectDetails] = useState({
@@ -14,7 +23,35 @@ const App = () => {
 
   let content;
 
-  const handleProjects = (newProject) => {
+  const data = collection(db, "project");
+  const data2 = collection(db, "task");
+
+  useEffect(() => {
+    const getProjectDataFromFirebase = async () => {
+      const getData = await getDocs(data);
+      const getData2 = await getDocs(data2);
+      const formattedProject = getData.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      const formattedTask = getData2.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setProjectDetails((prevState) => {
+        return {
+          ...prevState,
+          projects: formattedProject,
+          task: formattedTask,
+        };
+      });
+    };
+
+    getProjectDataFromFirebase();
+  }, []);
+
+  const handleProjects = async (newProject) => {
+    await addDoc(data, newProject);
     setProjectDetails((prevState) => {
       return {
         ...prevState,
@@ -51,7 +88,8 @@ const App = () => {
     });
   };
 
-  const deleteProject = (projectId) => {
+  const deleteProject = async (projectId) => {
+    await deleteDoc(doc(db, "project", projectId));
     setProjectDetails((prevState) => {
       return {
         ...prevState,
@@ -63,7 +101,8 @@ const App = () => {
     });
   };
 
-  const saveTaskDetails = (task) => {
+  const saveTaskDetails = async (task) => {
+    await addDoc(data2, task);
     setProjectDetails((prevState) => {
       return {
         ...prevState,
@@ -72,13 +111,12 @@ const App = () => {
     });
   };
 
-  const deleteTask = (taskId) => {
+  const deleteTask = async (taskId) => {
+    await deleteDoc(doc(db, "task", taskId));
     setProjectDetails((prevState) => {
       return {
         ...prevState,
-        task: prevState.task.filter(
-          (task) => taskId !== task.id
-        ),
+        task: prevState.task.filter((task) => taskId !== task.id),
       };
     });
   };

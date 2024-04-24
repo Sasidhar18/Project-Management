@@ -11,7 +11,7 @@ const ProjectInput = ({ getProject, onCancelProject }) => {
       title: projectName.current.value,
       description: description.current.value,
       date: endDate.current.value,
-      id: Math.round(Math.random() * 100),
+      id: Math.round(Math.random() * 100).toString(),
     };
 
     if (
