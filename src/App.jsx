@@ -12,7 +12,7 @@ import {
   setDoc,
   deleteDoc,
   addDoc,
-} from "firebase/firestore/lite";
+} from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
 
 const App = () => {
   const [ProjectDetails, setProjectDetails] = useState({
