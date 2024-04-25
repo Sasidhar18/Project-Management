@@ -12,7 +12,7 @@ import {
   setDoc,
   deleteDoc,
   addDoc,
-} from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 const App = () => {
   const [ProjectDetails, setProjectDetails] = useState({
@@ -51,12 +51,17 @@ const App = () => {
   }, []);
 
   const handleProjects = async (newProject) => {
-    await addDoc(data, newProject);
+    const {id} = await addDoc(data, newProject);
     setProjectDetails((prevState) => {
       return {
         ...prevState,
         projectStatus: null,
-        projects: [...prevState.projects, newProject],
+        projects: [...prevState.projects, {
+          title: newProject.title,
+          description: newProject.description,
+          date: newProject.date,
+          id,
+        }],
       };
     });
   };
@@ -102,11 +107,19 @@ const App = () => {
   };
 
   const saveTaskDetails = async (task) => {
-    await addDoc(data2, task);
+    const { id } = await addDoc(data2, task);
+    console.log(id);
     setProjectDetails((prevState) => {
       return {
         ...prevState,
-        task: [...prevState.task, task],
+        task: [
+          ...prevState.task,
+          {
+            title: task.title,
+            projectId: task.projectId,
+            id: id,
+          },
+        ],
       };
     });
   };

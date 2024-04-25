@@ -6,7 +6,6 @@ const Tasks = ({ task, saveTask, projectId, onDeleteTask }) => {
   const handleTask = () => {
     const task = {
       title: newTask.current.value,
-      id: Math.round(Math.random() * 100),
       projectId,
     };
     newTask.current.value = "";
