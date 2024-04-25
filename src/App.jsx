@@ -51,17 +51,20 @@ const App = () => {
   }, []);
 
   const handleProjects = async (newProject) => {
-    const {id} = await addDoc(data, newProject);
+    const { id } = await addDoc(data, newProject);
     setProjectDetails((prevState) => {
       return {
         ...prevState,
         projectStatus: null,
-        projects: [...prevState.projects, {
-          title: newProject.title,
-          description: newProject.description,
-          date: newProject.date,
-          id,
-        }],
+        projects: [
+          ...prevState.projects,
+          {
+            title: newProject.title,
+            description: newProject.description,
+            date: newProject.date,
+            id,
+          },
+        ],
       };
     });
   };
@@ -108,7 +111,6 @@ const App = () => {
 
   const saveTaskDetails = async (task) => {
     const { id } = await addDoc(data2, task);
-    console.log(id);
     setProjectDetails((prevState) => {
       return {
         ...prevState,
@@ -117,6 +119,7 @@ const App = () => {
           {
             title: task.title,
             projectId: task.projectId,
+            completed: task.completed,
             id: id,
           },
         ],
@@ -130,6 +133,31 @@ const App = () => {
       return {
         ...prevState,
         task: prevState.task.filter((task) => taskId !== task.id),
+      };
+    });
+  };
+
+
+  const completeTask = async (task) => {
+    await setDoc(doc(db, "task", task.id),{
+      title: task.title,
+      projectId: task.projectId,
+      completed:!task.completed,
+      id: task.id,
+    });
+    setProjectDetails((prevState) => {
+      return {
+        ...prevState,
+        task: prevState.task.map((item) => {
+          if (item.id === task.id) {
+            return {
+              ...item,
+              completed: !item.completed,
+            };
+          } else {
+            return item;
+          }
+        }),
       };
     });
   };
@@ -154,6 +182,7 @@ const App = () => {
   } else if (ProjectDetails.projectStatus) {
     content = (
       <ProjectView
+        completeTask={completeTask}
         saveTask={saveTaskDetails}
         task={currentTask}
         onDeleteTask={deleteTask}
