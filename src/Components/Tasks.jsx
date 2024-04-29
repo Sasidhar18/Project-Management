@@ -9,6 +9,9 @@ const Tasks = ({ projectId }) => {
   const currentTask = task.filter((task) => task.projectId === projectStatus);
 
   const handleTask = () => {
+    if((newTask.current.value).trim() === ""){
+      return;
+    }
     const task = {
       title: newTask.current.value,
       completed: false,
