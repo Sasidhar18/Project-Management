@@ -1,12 +1,14 @@
-import React, { useRef } from "react";
+import React, { useRef, useContext } from "react";
 import Input from "./Input";
+import { ProjectContext } from "../Store/project-context-provider";
 
-const ProjectInput = ({ getProject, onCancelProject }) => {
+const ProjectInput = () => {
   const projectName = useRef();
   const description = useRef();
   const endDate = useRef();
+  const { addProject, closeProject } = useContext(ProjectContext);
 
-  const handleProject = () => {
+  const addNewProject = () => {
     const ProjectDetails = {
       title: projectName.current.value,
       description: description.current.value,
@@ -22,7 +24,7 @@ const ProjectInput = ({ getProject, onCancelProject }) => {
       return;
     }
 
-    getProject(ProjectDetails);
+    addProject(ProjectDetails);
   };
 
   return (
@@ -32,10 +34,10 @@ const ProjectInput = ({ getProject, onCancelProject }) => {
       <Input ref={description} label="Project description" textarea />
       <Input type="date" ref={endDate} label="End Date" />
       <div className="button-container">
-        <button className="cancel-btn" onClick={onCancelProject}>
+        <button className="cancel-btn" onClick={closeProject}>
           Cancel
         </button>
-        <button className="save-btn" onClick={handleProject}>
+        <button className="save-btn" onClick={addNewProject}>
           Save
         </button>
       </div>

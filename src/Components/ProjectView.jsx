@@ -1,8 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import Tasks from "./Tasks";
+import { ProjectContext } from "../Store/project-context-provider";
 
-const ProjectDetails = ({ project, onDeleteProject, task, saveTask, onDeleteTask, completeTask }) => {
-  const projectDate = new Date(project.date).toLocaleString("en-in", {
+const ProjectDetails = () => {
+  const { projects, projectStatus, deleteProject } = useContext(ProjectContext);
+
+  const selectedProject = projects.find(
+    (project) => project.id === projectStatus
+  );
+  const projectDate = new Date(selectedProject.date).toLocaleString("en-in", {
     day: "2-digit",
     month: "long",
     year: "numeric",
@@ -10,12 +16,12 @@ const ProjectDetails = ({ project, onDeleteProject, task, saveTask, onDeleteTask
   return (
     <div className="project-view-details">
       <div className="project-title">
-        <h2>{project.title}</h2>
-        <button onClick={() => onDeleteProject(project.id)}>X</button>
+        <h2>{selectedProject.title}</h2>
+        <button onClick={() => deleteProject(selectedProject.id)}>X</button>
       </div>
-      <p>{project.description}</p>
+      <p>{selectedProject.description}</p>
       <p>{projectDate}</p>
-      <Tasks projectId={project.id} saveTask={saveTask} task={task} onDeleteTask={onDeleteTask} onCompleteTask={completeTask}/>
+      <Tasks projectId={selectedProject.id} />
     </div>
   );
 };
